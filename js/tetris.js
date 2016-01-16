@@ -35,7 +35,6 @@ var waitedATick = false;
 function newShape() {
     var id = (Math.random() < 0.075) ? shapes.length - 1 : Math.floor( Math.random() * (shapes.length - 1));
     var shape = shapes[ id ]; // maintain id for color filling
-    console.log(id)
     current = [];
     for ( var y = 0; y < 4; ++y ) {
         current[ y ] = [];
@@ -104,10 +103,13 @@ function tick() {
 
 // stop shape at its position and fix it to board
 function freeze() {
+    // If this is a bomb
     if (current[0][0] == shapes.length) {
         for (var y = currentY - 1; y <= currentY + 1; y++) {
             for (var x = currentX - 1; x <= currentX + 1; x++) {
-                board[y][x] = 0;
+                if (y >= 0 && y < ROWS && x >= 0 && x < COLS) {
+                    board[y][x] = 0;
+                }
             }
         }
     }
@@ -276,7 +278,8 @@ function valid( offsetX, offsetY, newCurrent )
                   || x + offsetX < 0
                   || y + offsetY >= ROWS
                   || x + offsetX >= COLS ) {
-                    if (offsetY == 1) lose = true; // lose if the current shape at the top row when checked
+                    // Don't lose if the current shape is a bomb
+                    if (offsetY == 1 && current[0][0] !== shapes.length) lose = true; // lose if the current shape at the top row when checked
                     return false;
                 }
             }
