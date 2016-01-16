@@ -293,8 +293,11 @@ function defeat() {
 }
 
 function victory() {
-    level = MOVES_BEFORE_NEW_ROW - 1;
+    var level = MOVES_BEFORE_NEW_ROW - 1;
     if (level > 0) {
+        document.getElementById('levelUp').style.display = 'block';
+        document.getElementById('levelUp').style.visibility = 'visible';
+        setTimeout(function(){ document.getElementById('levelUp').style.visibility = 'hidden'; }, 5000);
         newGame(level, NUM_ROWS_AT_START);
     } else {
         window.location.replace('victory.html');
@@ -313,4 +316,4 @@ function newGame(moves_before_new_row, num_rows_at_start) {
     interval = setInterval( tick, 250 );
 }
 
-newGame(10, 3);
+newGame(10, 0);
