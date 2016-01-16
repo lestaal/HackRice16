@@ -132,6 +132,26 @@ function rotate( current ) {
         }
     }
 
+    // Shift the piece to the top of the 4x4 square
+    while (newCurrent[0] == [0, 0, 0, 0]) {
+        newCurrent[0] = newCurrent[1];
+        newCurrent[1] = newCurrent[2];
+        newCurrent[2] = newCurrent[3];
+        newCurrent[3] = [0, 0, 0, 0];
+    }
+
+    // Shift the piece to the left of the 4x4 square
+    while (newCurrent[0][0] == 0 && newCurrent[1][0] == 0 && newCurrent[2][0] == 0 && newCurrent[3][0] == 0) {
+        for (var x = 0; x < 3; x++) {
+            for (var y = 0; y < 4; y++) {
+                newCurrent[y][x] = newCurrent[y][x+1];
+            }
+        }
+        for (var y = 0; y < 4; y++) {
+            newCurrent[y][3] = 0;
+        }
+    }
+
     return newCurrent;
 }
 
