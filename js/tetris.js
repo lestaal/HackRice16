@@ -1,4 +1,7 @@
 var COLS = 10, ROWS = 20;
+var MOVES_BEFORE_NEW_ROW = 10;
+var num_moves = 0;
+
 var board = [];
 var lose;
 var interval;
@@ -57,14 +60,7 @@ function init() {
     }
 
     for ( var y = 3*ROWS/4; y < ROWS; ++y ) {
-        board[ y ] = [];
-        for ( var x = 0; x < COLS; ++x) {
-            board[ y ][ x ] = 8;
-        }
-
-
-        board[ y ][Math.floor( Math.random() * COLS/2)] = 0;
-        board[ y ][COLS/2 + Math.floor( Math.random() * COLS/2)] = 0;
+        add_row_from_bottom();
     }
 }
 
@@ -73,14 +69,23 @@ function tick() {
     if ( valid( 0, 1 ) ) {
         ++currentY;
     }
+
     // if the element settled
     else {
         freeze();
         clearLines();
+
         if (lose) {
             newGame();
             return false;
         }
+
+        ++num_moves;
+        if (num_moves % MOVES_BEFORE_NEW_ROW == 0) {
+            num_moves = 0;
+            add_row_from_bottom();
+        }
+
         newShape();
     }
 }
@@ -93,6 +98,27 @@ function freeze() {
                 board[ y + currentY ][ x + currentX ] = current[ y ][ x ];
             }
         }
+    }
+}
+
+function add_row_from_bottom()
+{
+    for ( var y = 1; y < ROWS; ++y ) {
+        for ( var x = 0; x < COLS; ++x ) {
+            board[ y - 1 ][ x ] = board[ y ][ x ];
+        }
+    }
+
+    for ( var x = 0; x < COLS; ++x ) {
+        board[ ROWS - 1 ][ x ] = 8;
+    }
+
+    board[ ROWS - 1][Math.floor( Math.random() * COLS/2)] = 0;
+    board[ ROWS - 1 ][COLS/2 + Math.floor( Math.random() * COLS/2)] = 0;
+
+    if (lose) {
+        newGame();
+        return false;
     }
 }
 
@@ -187,9 +213,9 @@ function valid( offsetX, offsetY, newCurrent ) {
 
 function newGame() {
     clearInterval(interval);
+    lose = false;
     init();
     newShape();
-    lose = false;
     interval = setInterval( tick, 250 );
 }
 
