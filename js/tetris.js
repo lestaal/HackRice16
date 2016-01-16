@@ -285,7 +285,7 @@ function victory() {
     if (level > 0) {
         newGame(level, NUM_ROWS_AT_START);
     } else {
-        //window.location.replace('../victory');
+        window.location.replace('victory.html');
     }
 }
 
@@ -300,4 +300,4 @@ function newGame(moves_before_new_row, num_rows_at_start) {
     interval = setInterval( tick, 250 );
 }
 
-newGame(10, 1);
+newGame(10, 2);
