@@ -27,6 +27,7 @@ var shapes = [
 var colors = [
     'cyan', 'orange', 'blue', 'yellow', 'red', 'green', 'purple', 'grey'
 ];
+var waitedATick = false;
 
 // creates a new 4x4 shape in global variable 'current'
 // 4x4 so as to cover the size when the shape is rotated
@@ -74,6 +75,10 @@ function tick() {
 
     // if the element settled
     else {
+        if (!waitedATick) {
+            waitedATick = true;
+            return;
+        }
         freeze();
         clearLines();
         checkVictory();
@@ -147,6 +152,26 @@ function rotate( current )
         newCurrent[ y ] = [];
         for ( var x = 0; x < 4; ++x ) {
             newCurrent[ y ][ x ] = current[ 3 - x ][ y ];
+        }
+    }
+
+    // Shift the piece to the top of the 4x4 square
+    while (newCurrent[0] == [0, 0, 0, 0]) {
+        newCurrent[0] = newCurrent[1];
+        newCurrent[1] = newCurrent[2];
+        newCurrent[2] = newCurrent[3];
+        newCurrent[3] = [0, 0, 0, 0];
+    }
+
+    // Shift the piece to the left of the 4x4 square
+    while (newCurrent[0][0] == 0 && newCurrent[1][0] == 0 && newCurrent[2][0] == 0 && newCurrent[3][0] == 0) {
+        for (var x = 0; x < 3; x++) {
+            for (var y = 0; y < 4; y++) {
+                newCurrent[y][x] = newCurrent[y][x+1];
+            }
+        }
+        for (var y = 0; y < 4; y++) {
+            newCurrent[y][3] = 0;
         }
     }
 
@@ -252,7 +277,7 @@ function valid( offsetX, offsetY, newCurrent )
 }
 
 function defeat() {
-    //window.location.replace('../defeat');
+    window.location.replace('gameover.html');
 }
 
 function victory() {
@@ -275,12 +300,4 @@ function newGame(moves_before_new_row, num_rows_at_start) {
     interval = setInterval( tick, 250 );
 }
 
-function sleep(millis)
- {
-  var date = new Date();
-  while(new Date() - date < millis) {
-    continue;
-  }
-}
-
-newGame(10, 0);
+newGame(10, 1);
