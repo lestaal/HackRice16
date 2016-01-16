@@ -22,10 +22,11 @@ var shapes = [
     [ 0, 1, 1, 0,
       1, 1 ],
     [ 0, 1, 0, 0,
-      1, 1, 1 ]
+      1, 1, 1 ],
+    [1, 0, 0, 0]
 ];
 var colors = [
-    'cyan', 'orange', 'blue', 'yellow', 'red', 'green', 'purple', 'grey'
+    'cyan', 'orange', 'blue', 'yellow', 'red', 'green', 'purple', 'black', 'grey'
 ];
 var waitedATick = false;
 
@@ -102,12 +103,20 @@ function tick() {
 }
 
 // stop shape at its position and fix it to board
-function freeze()
-{
-    for ( var y = 0; y < 4; ++y ) {
-        for ( var x = 0; x < 4; ++x ) {
-            if ( current[ y ][ x ] ) {
-                board[ y + currentY ][ x + currentX ] = current[ y ][ x ];
+function freeze() {
+    if (current[0][0] == shapes.length) {
+        for (var y = currentY - 1; y <= currentY + 1; y++) {
+            for (var x = currentX - 1; x <= currentX + 1; x++) {
+                board[y][x] = 0;
+            }
+        }
+    }
+    else {
+        for ( var y = 0; y < 4; ++y ) {
+            for ( var x = 0; x < 4; ++x ) {
+                if ( current[ y ][ x ] ) {
+                    board[ y + currentY ][ x + currentX ] = current[ y ][ x ];
+                }
             }
         }
     }
@@ -128,7 +137,7 @@ function add_row_from_bottom()
     moveUpRows();
 
     for ( var x = 0; x < COLS; ++x ) {
-        board[ ROWS - 1 ][ x ] = 8;
+        board[ ROWS - 1 ][ x ] = shapes.length + 1;
     }
 
     if (MOVES_BEFORE_NEW_ROW >= 5) {
