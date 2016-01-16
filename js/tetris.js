@@ -1,9 +1,11 @@
 var COLS = 10, ROWS = 20;
-var MOVES_BEFORE_NEW_ROW = 10;
+var NUM_ROWS_AT_START;
+var MOVES_BEFORE_NEW_ROW;
 var num_moves = 0;
 
 var board = [];
 var lose;
+var victoryCondition;
 var interval;
 var current; // current moving shape
 var currentX, currentY; // position of current shape
@@ -59,7 +61,7 @@ function init() {
         }
     }
 
-    for ( var y = 3*ROWS/4; y < ROWS; ++y ) {
+    for ( var y = ROWS - NUM_ROWS_AT_START; y < ROWS; ++y ) {
         add_row_from_bottom();
     }
 }
@@ -74,9 +76,13 @@ function tick() {
     else {
         freeze();
         clearLines();
+        checkVictory();
 
-        if (lose) {
-            newGame();
+        if(victoryCondition) {
+            victory();
+            return false;
+        } else if (lose) {
+            defeat();
             return false;
         }
 
@@ -91,7 +97,8 @@ function tick() {
 }
 
 // stop shape at its position and fix it to board
-function freeze() {
+function freeze()
+{
     for ( var y = 0; y < 4; ++y ) {
         for ( var x = 0; x < 4; ++x ) {
             if ( current[ y ][ x ] ) {
@@ -101,29 +108,40 @@ function freeze() {
     }
 }
 
-function add_row_from_bottom()
+function moveUpRows()
 {
     for ( var y = 1; y < ROWS; ++y ) {
         for ( var x = 0; x < COLS; ++x ) {
             board[ y - 1 ][ x ] = board[ y ][ x ];
+            board[ y ][ x ] = 0;
         }
     }
+}
+
+function add_row_from_bottom()
+{
+    moveUpRows();
 
     for ( var x = 0; x < COLS; ++x ) {
         board[ ROWS - 1 ][ x ] = 8;
     }
 
-    board[ ROWS - 1][Math.floor( Math.random() * COLS/2)] = 0;
-    board[ ROWS - 1 ][COLS/2 + Math.floor( Math.random() * COLS/2)] = 0;
+    if (MOVES_BEFORE_NEW_ROW >= 5) {
+        board[ ROWS - 1][Math.floor( Math.random() * COLS/2)] = 0;
+        board[ ROWS - 1 ][COLS/2 + Math.floor( Math.random() * COLS/2)] = 0;
+    } else {
+        board[ ROWS - 1][Math.floor( Math.random() * COLS)] = 0;
+    }
 
     if (lose) {
-        newGame();
+        defeat();
         return false;
     }
 }
 
 // returns rotates the rotated shape 'current' perpendicularly anticlockwise
-function rotate( current ) {
+function rotate( current )
+{
     var newCurrent = [];
     for ( var y = 0; y < 4; ++y ) {
         newCurrent[ y ] = [];
@@ -136,7 +154,8 @@ function rotate( current ) {
 }
 
 // check if any lines are filled and clear them
-function clearLines() {
+function clearLines()
+{
     for ( var y = ROWS - 1; y >= 0; --y ) {
         var rowFilled = true;
         for ( var x = 0; x < COLS; ++x ) {
@@ -157,7 +176,27 @@ function clearLines() {
     }
 }
 
-function keyPress( key ) {
+function checkClearColumn(col_index)
+{
+    for (var y = 0; y < ROWS; ++y) {
+        if (board[y][col_index] != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function checkVictory()
+{
+    for (var x = 0; x < COLS - 1; ++x) {
+        if (checkClearColumn(x) && checkClearColumn(x + 1)) {
+            victoryCondition = true;
+        }
+    }
+}
+
+function keyPress( key )
+{
     switch ( key ) {
         case 'left':
             if ( valid( -1 ) ) {
@@ -184,7 +223,8 @@ function keyPress( key ) {
 }
 
 // checks if the resulting position of current shape will be feasible
-function valid( offsetX, offsetY, newCurrent ) {
+function valid( offsetX, offsetY, newCurrent )
+{
     offsetX = offsetX || 0;
     offsetY = offsetY || 0;
     offsetX = currentX + offsetX;
@@ -211,12 +251,36 @@ function valid( offsetX, offsetY, newCurrent ) {
     return true;
 }
 
-function newGame() {
+function defeat() {
+    //window.location.replace('../defeat');
+}
+
+function victory() {
+    level = MOVES_BEFORE_NEW_ROW - 1;
+    if (level > 0) {
+        newGame(level, NUM_ROWS_AT_START);
+    } else {
+        //window.location.replace('../victory');
+    }
+}
+
+function newGame(moves_before_new_row, num_rows_at_start) {
+    MOVES_BEFORE_NEW_ROW = moves_before_new_row;
+    NUM_ROWS_AT_START = num_rows_at_start + ((MOVES_BEFORE_NEW_ROW % 2 == 0) ? 1 : 0);
     clearInterval(interval);
     lose = false;
+    victoryCondition = false;
     init();
     newShape();
     interval = setInterval( tick, 250 );
 }
 
-newGame();
+function sleep(millis)
+ {
+  var date = new Date();
+  while(new Date() - date < millis) {
+    continue;
+  }
+}
+
+newGame(10, 0);
