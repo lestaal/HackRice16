@@ -33,9 +33,9 @@ var waitedATick = false;
 // creates a new 4x4 shape in global variable 'current'
 // 4x4 so as to cover the size when the shape is rotated
 function newShape() {
-    var id = Math.floor( Math.random() * shapes.length );
+    var id = (Math.random() < 0.075) ? shapes.length - 1 : Math.floor( Math.random() * (shapes.length - 1));
     var shape = shapes[ id ]; // maintain id for color filling
-
+    console.log(id)
     current = [];
     for ( var y = 0; y < 4; ++y ) {
         current[ y ] = [];
