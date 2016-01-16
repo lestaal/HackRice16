@@ -20,7 +20,7 @@ var shapes = [
       1, 1, 1 ]
 ];
 var colors = [
-    'cyan', 'orange', 'blue', 'yellow', 'red', 'green', 'purple'
+    'cyan', 'orange', 'blue', 'yellow', 'red', 'green', 'purple', 'grey'
 ];
 
 // creates a new 4x4 shape in global variable 'current'
@@ -54,6 +54,17 @@ function init() {
         for ( var x = 0; x < COLS; ++x ) {
             board[ y ][ x ] = 0;
         }
+    }
+
+    for ( var y = 3*ROWS/4; y < ROWS; ++y ) {
+        board[ y ] = [];
+        for ( var x = 0; x < COLS; ++x) {
+            board[ y ][ x ] = 8;
+        }
+
+
+        board[ y ][Math.floor( Math.random() * COLS/2)] = 0;
+        board[ y ][COLS/2 + Math.floor( Math.random() * COLS/2)] = 0;
     }
 }
 
