@@ -1,7 +1,7 @@
 var COLS = 10, ROWS = 20;
 var NUM_ROWS_AT_START;
 var MOVES_BEFORE_NEW_ROW;
-var num_moves = 0;
+var num_moves;
 
 var board = [];
 var lose;
@@ -295,6 +295,7 @@ function newGame(moves_before_new_row, num_rows_at_start) {
     clearInterval(interval);
     lose = false;
     victoryCondition = false;
+    num_moves = 0;
     init();
     newShape();
     interval = setInterval( tick, 250 );
