@@ -17,16 +17,6 @@ function render() {
     for ( var x = 0; x < COLS; ++x ) {
         for ( var y = 0; y < ROWS; ++y ) {
             if ( board[ y ][ x ] ) {
-                /*
-                if (colors[board[y][x] - 1] === 'bomb') {
-                    var img = document.createElement("IMG");
-                    img.setAttribute('src', 'bomb.png');
-                    img.setAttribute('width', BLOCK_W);
-                    img.setAttribute('height', BLOCK_H);
-                    var pat = ctx.createPattern(img, 'repeat');
-                    ctx.fillStyle = pat;
-                }
-                else { */
                 ctx.fillStyle = colors[ board[ y ][ x ] - 1 ];
                 drawBlock( x, y );
             }
