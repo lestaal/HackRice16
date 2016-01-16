@@ -316,4 +316,4 @@ function newGame(moves_before_new_row, num_rows_at_start) {
     interval = setInterval( tick, 250 );
 }
 
-newGame(10, 0);
+newGame(10, 3);
