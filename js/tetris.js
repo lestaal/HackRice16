@@ -76,7 +76,7 @@ function tick() {
         clearLines();
 
         if (lose) {
-            newGame();
+            gameOver();
             return false;
         }
 
@@ -217,6 +217,10 @@ function newGame() {
     init();
     newShape();
     interval = setInterval( tick, 250 );
+}
+
+function gameOver() {
+    window.location.href = 'gameover.html'
 }
 
 newGame();
