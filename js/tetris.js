@@ -25,6 +25,7 @@ var shapes = [
 var colors = [
     'cyan', 'orange', 'blue', 'yellow', 'red', 'green', 'purple', 'grey'
 ];
+var waitedATick = false;
 
 // creates a new 4x4 shape in global variable 'current'
 // 4x4 so as to cover the size when the shape is rotated
@@ -72,6 +73,10 @@ function tick() {
 
     // if the element settled
     else {
+        if (!waitedATick) {
+            waitedATick = true;
+            return;
+        }
         freeze();
         clearLines();
 
